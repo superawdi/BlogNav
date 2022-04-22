@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blogs</title>
+    <style>
+        .pointer {
+            cursor: pointer;
+        }
+        
+        #viwer {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            left: 0;
+            padding: 1rem;
+            padding-top: 3rem;
+        }
+        
+        .close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+        }
+        
+        a {
+            display: block;
+        }
+        
+        .d-none {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Hi</h1>
+    <div id="app"></div>
+    <div id="viwer" class="d-none">
+        <button class="close">&times;</button>
+        <div class="content">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus, sint illo laborum facilis omnis possimus amet sed, libero dignissimos commodi sequi, velit fuga molestiae. Atque.
+        </div>
+    </div>
+    <script>
+        const app = document.querySelector("#app");
+        const viewer = document.querySelector("#viwer");
+
+        const toggle = () => {
+            app.classList.toggle('d-none');
+            viewer.classList.toggle('d-none');
+        }
+        document.querySelector('.close').addEventListener('click', toggle);
+        const read = (blog) => {
+            toggle();
+            viewer.querySelector('.content').innerHTML =
+                `<h4>${blog.title}</h4><p>${blog.body}</p>`;
+        }
+        let blogs = undefined;
+        const GetData = async() => {
+            const req = await fetch('https://jsonplaceholder.typicode.com/posts');
+            blogs = await req.json();
+            blogs.forEach(blog => {
+                const div = document.createElement('a');
+                div.classList.add('pointer');
+                div.href = "/" + blog.id;
+                div.dataset.id = blog.id;
+                div.textContent = blog.title;
+                div.addEventListener('click', () => read(blog))
+                app.append(div);
+            });
+        }
+        GetData();
+    </script>
+</body>
+
+</html>
